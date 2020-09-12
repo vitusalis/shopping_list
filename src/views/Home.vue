@@ -5,15 +5,14 @@
         </header>
         <div id="app">
             <div class="form">
-                
             <!-- NEW ITEM -->
                 <input
                     id="newItem"
                     class="form-control"
                     type="text"
-                    placeholder="ex.: leite, ovos"
+                    placeholder="ex: leite, ovos"
                     v-model="item.name"
-                    @keyup.enter="addItem(item)"
+                    @keyup.enter="change_focus('newItemAmmount')"
                 />
             <div class="flex center">
                 <input
@@ -21,6 +20,7 @@
                     class="form-control"
                     type="number"
                     v-model="item.ammount"
+                    placeholder="1"
                     @keyup.enter="addItem(item)"
                 />
                 <button id="addItem" class="btn btn-primary" @click="addItem(item)">
@@ -71,7 +71,7 @@ export default {
             shopping_list:[],
             item:{
                 name:"",
-                ammount:1
+                ammount:undefined
             },
             hide_completed:false
 
@@ -86,10 +86,13 @@ export default {
             this.shopping_list = ls_list ? ls_list : [] 
             },
         addItem(item){
+            if (!this.item.ammount)
+                this.item.ammount = 1
             this.shopping_list = [{...item}, ...this.shopping_list]
             this.set_list();
             this.item.name = ""
-            this.item.ammount = 1
+            this.item.ammount = undefined
+            this.change_focus('newItem')
             },
         removeItem(item){
             this.shopping_list = this.shopping_list.filter(i => i!= item)
@@ -98,7 +101,10 @@ export default {
         clear_list(){
             this.shopping_list = this.shopping_list.map(item=> {return{...item, completed:false}})
             this.set_list();
-        }
+        },
+        change_focus(el_id){
+            document.getElementById(el_id).focus();
+            }
     },
     created(){
         this.get_list()
